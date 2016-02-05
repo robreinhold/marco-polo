@@ -7,7 +7,7 @@
     "InstanceType" : {
       "Description" : "WebServer EC2 instance type",
       "Type" : "String",
-      "Default" : "t1.micro",
+      "Default" : "t2.small",
       "AllowedValues" : [ "t1.micro", "t2.micro", "t2.small", "t2.medium", "m1.small", "m1.medium", "m1.large",
         "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge", "c1.medium", "c1.xlarge", "c3.large", "c3.xlarge", "c3.2xlarge",
         "c3.4xlarge", "c3.8xlarge", "g2.2xlarge", "r3.large", "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge", "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge",
@@ -44,6 +44,18 @@
       "Description" : "The # of instances to run in parallel. Same value is used for each 'service' - Alice, Bob, Charlie",
       "Type": "Number",
       "Default": "1"
+    },
+
+    "SubnetList" : {
+      "Description" : "Subnets to attach to",
+      "Type" : "List<AWS::EC2::Subnet::Id>",
+      "Default": "subnet-86fecaf2,subnet-7d2c7a3b"
+    },
+
+    "SecurityGroupList" : {
+      "Description" : "Security groups to apply",
+      "Type" : "List<AWS::EC2::SecurityGroup::Id>",
+      "Default": "sg-cca751a3,sg-a7a751c8,sg-afa751c0"
     }
 
   },
@@ -114,10 +126,17 @@
     "AliceGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
-        "AvailabilityZones" : { "Fn::GetAZs" : ""},
         "LaunchConfigurationName" : { "Ref" : "AliceLaunchConfig" },
         "MinSize" : { "Ref" : "ScaleGroupSize"},
         "MaxSize" : { "Ref" : "ScaleGroupSize"},
+        "VPCZoneIdentifier" : {"Ref" : "SubnetList"},
+        "Tags" : [
+          {
+            "Key" : "Name",
+            "Value" : "MarcoPolo - Alice Service",
+            "PropagateAtLaunch" : "true"
+          }
+        ],
         "NotificationConfigurations" : [{
           "TopicARN" : { "Ref" : "NotificationTopic" },
           "NotificationTypes" : [ "autoscaling:EC2_INSTANCE_LAUNCH",
@@ -125,20 +144,6 @@
             "autoscaling:EC2_INSTANCE_TERMINATE",
             "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"]
         }]
-      },
-      "CreationPolicy" : {
-        "ResourceSignal" : {
-          "Timeout" : "PT15M",
-          "Count"   : "1"
-        }
-      },
-      "UpdatePolicy": {
-        "AutoScalingRollingUpdate": {
-          "MinInstancesInService": "1",
-          "MaxBatchSize": "1",
-          "PauseTime" : "PT15M",
-          "WaitOnResourceSignals": "true"
-        }
       }
     },
 
@@ -192,7 +197,6 @@
 
             "services" : {
               "sysvinit" : {
-                "httpd"    : { "enabled" : "true", "ensureRunning" : "true" },
                 "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
                   "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
               }
@@ -204,7 +208,7 @@
         "KeyName" : { "Ref" : "KeyName" },
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-        "SecurityGroups" : [ "sg-4636f122", "sg-5536f131", "sg-ab36f1cf" ],
+        "SecurityGroups" : { "Ref" : "SecurityGroupList"},
         "InstanceType" : { "Ref" : "InstanceType" },
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
@@ -221,33 +225,13 @@
           "         --region ", { "Ref" : "AWS::Region" }, "\n"
         ]]}}
       }
-    },
-
-    "ElasticLoadBalancer" : {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
-      "Properties" : {
-        "AvailabilityZones" : { "Fn::GetAZs" : "" },
-        "CrossZone" : "true",
-        "Listeners" : [ {
-          "LoadBalancerPort" : "80",
-          "InstancePort" : "80",
-          "Protocol" : "HTTP"
-        } ],
-        "HealthCheck" : {
-          "Target" : "HTTP:80/",
-          "HealthyThreshold" : "3",
-          "UnhealthyThreshold" : "5",
-          "Interval" : "30",
-          "Timeout" : "5"
-        }
-      }
     }
   },
 
   "Outputs" : {
     "URL" : {
       "Description" : "The URL of the website",
-      "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}]]}
+      "Value" :  { "Fn::Join" : [ "", [ "http://localhost" ] ] }
     }
   }
 }
