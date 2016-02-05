@@ -160,16 +160,6 @@
             },
 
             "files" : {
-              "/var/www/html/index.html" : {
-                "content" : { "Fn::Join" : ["\n", [
-                  "<img src=\"https://s3.amazonaws.com/cloudformation-examples/cloudformation_graphic.png\" alt=\"AWS CloudFormation Logo\"/>",
-                  "<h1>Congratulations, you have successfully launched the AWS CloudFormation sample.</h1>"
-                ]]},
-                "mode"    : "000644",
-                "owner"   : "root",
-                "group"   : "root"
-              },
-
               "/etc/cfn/cfn-hup.conf" : {
                 "content" : { "Fn::Join" : ["", [
                   "[main]\n",
@@ -188,7 +178,111 @@
                   "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
                   "action=/opt/aws/bin/cfn-init -v ",
                   "         --stack ", { "Ref" : "AWS::StackName" },
-                  "         --resource LaunchConfig ",
+                  "         --resource AliceLaunchConfig ",
+                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                  "runas=root\n"
+                ]]}
+              }
+            },
+
+            "services" : {
+              "sysvinit" : {
+                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                  "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+              }
+            }
+          }
+        }
+      },
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "SecurityGroups" : { "Ref" : "SecurityGroupList"},
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -xe\n",
+          "yum update -y aws-cfn-bootstrap\n",
+
+          "/opt/aws/bin/cfn-init -v ",
+          "         --stack ", { "Ref" : "AWS::StackName" },
+          "         --resource AliceLaunchConfig ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "/opt/aws/bin/cfn-signal -e $? ",
+          "         --stack ", { "Ref" : "AWS::StackName" },
+          "         --resource AliceGroup ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "# Install NodeJS and NPM",
+          "yum install nodejs npm --enablerepo=epel -y", "\n",
+          "npm install restify", "\n",
+
+          "# Get the service and start",
+          "cd ~", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/alice.js", "\n",
+          "nohup node alice.js > ~/std.out &", "\n"
+
+        ]]}}
+      }
+    },
+
+    "BarneyGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "LaunchConfigurationName" : { "Ref" : "BarneyLaunchConfig" },
+        "MinSize" : { "Ref" : "ScaleGroupSize"},
+        "MaxSize" : { "Ref" : "ScaleGroupSize"},
+        "VPCZoneIdentifier" : {"Ref" : "SubnetList"},
+        "Tags" : [
+          {
+            "Key" : "Name",
+            "Value" : "MarcoPolo - Barney Service",
+            "PropagateAtLaunch" : "true"
+          }
+        ],
+        "NotificationConfigurations" : [{
+          "TopicARN" : { "Ref" : "NotificationTopic" },
+          "NotificationTypes" : [ "autoscaling:EC2_INSTANCE_LAUNCH",
+            "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+            "autoscaling:EC2_INSTANCE_TERMINATE",
+            "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"]
+        }]
+      }
+    },
+
+    "BarneyLaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "Comment" : "Install a simple application",
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "packages" : {
+              "yum" : {
+                "httpd" : []
+              }
+            },
+
+            "files" : {
+              "/etc/cfn/cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
+                  "action=/opt/aws/bin/cfn-init -v ",
+                  "         --stack ", { "Ref" : "AWS::StackName" },
+                  "         --resource BarneyLaunchConfig ",
                   "         --region ", { "Ref" : "AWS::Region" }, "\n",
                   "runas=root\n"
                 ]]}
@@ -221,11 +315,136 @@
 
           "/opt/aws/bin/cfn-signal -e $? ",
           "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource WebServerGroup ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n"
+          "         --resource BarneyGroup ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "# Install NodeJS and NPM",
+          "yum install nodejs npm --enablerepo=epel -y", "\n",
+          "npm install restify", "\n",
+
+          "# Get the service and start",
+          "cd ~", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/barney.js", "\n",
+          "nohup node barney.js > ~/std.out &", "\n"
+
+        ]]}}
+      }
+    },
+
+    "CarlesGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "LaunchConfigurationName" : { "Ref" : "CarlesLaunchConfig" },
+        "MinSize" : { "Ref" : "ScaleGroupSize"},
+        "MaxSize" : { "Ref" : "ScaleGroupSize"},
+        "VPCZoneIdentifier" : {"Ref" : "SubnetList"},
+        "Tags" : [
+          {
+            "Key" : "Name",
+            "Value" : "MarcoPolo - Carles Service",
+            "PropagateAtLaunch" : "true"
+          }
+        ],
+        "NotificationConfigurations" : [{
+          "TopicARN" : { "Ref" : "NotificationTopic" },
+          "NotificationTypes" : [ "autoscaling:EC2_INSTANCE_LAUNCH",
+            "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+            "autoscaling:EC2_INSTANCE_TERMINATE",
+            "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"]
+        }]
+      }
+    },
+
+    "CarlesLaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "Comment" : "Install a simple application",
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "packages" : {
+              "yum" : {
+                "httpd" : []
+              }
+            },
+
+            "files" : {
+              "/var/www/html/index.html" : {
+                "content" : { "Fn::Join" : ["\n", [
+                  "<img src=\"https://s3.amazonaws.com/cloudformation-examples/cloudformation_graphic.png\" alt=\"AWS CloudFormation Logo\"/>",
+                  "<h1>Congratulations, you have successfully launched the AWS CloudFormation sample.</h1>"
+                ]]},
+                "mode"    : "000644",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
+                  "action=/opt/aws/bin/cfn-init -v ",
+                  "         --stack ", { "Ref" : "AWS::StackName" },
+                  "         --resource CarlesLaunchConfig ",
+                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                  "runas=root\n"
+                ]]}
+              }
+            },
+
+            "services" : {
+              "sysvinit" : {
+                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                  "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+              }
+            }
+          }
+        }
+      },
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "SecurityGroups" : { "Ref" : "SecurityGroupList"},
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -xe\n",
+          "yum update -y aws-cfn-bootstrap\n",
+
+          "/opt/aws/bin/cfn-init -v ",
+          "         --stack ", { "Ref" : "AWS::StackName" },
+          "         --resource CarlesLaunchConfig ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "/opt/aws/bin/cfn-signal -e $? ",
+          "         --stack ", { "Ref" : "AWS::StackName" },
+          "         --resource CarlesGroup ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "# Install NodeJS and NPM",
+          "yum install nodejs npm --enablerepo=epel -y", "\n",
+          "npm install restify", "\n",
+
+          "# Get the service and start",
+          "cd ~", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/carles.js", "\n",
+          "nohup node carles.js > ~/std.out &", "\n"
+
         ]]}}
       }
     }
+
   },
 
   "Outputs" : {
