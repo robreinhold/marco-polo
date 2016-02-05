@@ -24,7 +24,7 @@ def main():
 
         for instance in ec2_conn.get_only_instances(instance_ids=instance_ids):
             url = "http://" + instance.private_ip_address + ":8080"
-            print "Trying {0}".format(url)
+            print "Trying {0}".format(url, timeout=3)
             try:
                 resp = requests.get(url)
                 print resp

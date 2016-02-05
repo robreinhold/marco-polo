@@ -310,7 +310,7 @@
 
           "/opt/aws/bin/cfn-init -v ",
           "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource LaunchConfig ",
+          "         --resource BarneyLaunchConfig ",
           "         --region ", { "Ref" : "AWS::Region" }, "\n",
 
           "/opt/aws/bin/cfn-signal -e $? ",
