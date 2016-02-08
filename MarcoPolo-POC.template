@@ -153,42 +153,14 @@
         "Comment" : "Install a simple application",
         "AWS::CloudFormation::Init" : {
           "config" : {
-            "packages" : {
-              "yum" : {
-                "httpd" : []
-              }
-            },
-
             "files" : {
-              "/etc/cfn/cfn-hup.conf" : {
+              "/tmp/message" : {
                 "content" : { "Fn::Join" : ["", [
-                  "[main]\n",
-                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
-                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                  "hello"
                 ]]},
                 "mode"    : "000400",
                 "owner"   : "root",
                 "group"   : "root"
-              },
-
-              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
-                "content": { "Fn::Join" : ["", [
-                  "[cfn-auto-reloader-hook]\n",
-                  "triggers=post.update\n",
-                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
-                  "action=/opt/aws/bin/cfn-init -v ",
-                  "         --stack ", { "Ref" : "AWS::StackName" },
-                  "         --resource AliceLaunchConfig ",
-                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
-                  "runas=root\n"
-                ]]}
-              }
-            },
-
-            "services" : {
-              "sysvinit" : {
-                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
-                  "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
               }
             }
           }
@@ -200,25 +172,16 @@
           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "SecurityGroups" : { "Ref" : "SecurityGroupList"},
         "InstanceType" : { "Ref" : "InstanceType" },
+        "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
-          "yum update -y aws-cfn-bootstrap\n",
 
-          "/opt/aws/bin/cfn-init -v ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource AliceLaunchConfig ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "/opt/aws/bin/cfn-signal -e $? ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource AliceGroup ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "# Install NodeJS and NPM",
+          "# Install NodeJS and NPM", "\n",
+          "yum update -y", "\n",
           "yum install nodejs npm --enablerepo=epel -y", "\n",
           "npm install restify", "\n",
 
-          "# Get the service and start",
+          "# Get the service and start", "\n",
           "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/alice.js", "\n",
           "nohup node alice.js > ~/std.out &", "\n"
@@ -257,42 +220,14 @@
         "Comment" : "Install a simple application",
         "AWS::CloudFormation::Init" : {
           "config" : {
-            "packages" : {
-              "yum" : {
-                "httpd" : []
-              }
-            },
-
             "files" : {
-              "/etc/cfn/cfn-hup.conf" : {
+              "/tmp/message" : {
                 "content" : { "Fn::Join" : ["", [
-                  "[main]\n",
-                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
-                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                  "hello"
                 ]]},
                 "mode"    : "000400",
                 "owner"   : "root",
                 "group"   : "root"
-              },
-
-              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
-                "content": { "Fn::Join" : ["", [
-                  "[cfn-auto-reloader-hook]\n",
-                  "triggers=post.update\n",
-                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
-                  "action=/opt/aws/bin/cfn-init -v ",
-                  "         --stack ", { "Ref" : "AWS::StackName" },
-                  "         --resource BarneyLaunchConfig ",
-                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
-                  "runas=root\n"
-                ]]}
-              }
-            },
-
-            "services" : {
-              "sysvinit" : {
-                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
-                  "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
               }
             }
           }
@@ -304,25 +239,16 @@
           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "SecurityGroups" : { "Ref" : "SecurityGroupList"},
         "InstanceType" : { "Ref" : "InstanceType" },
+        "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
-          "yum update -y aws-cfn-bootstrap\n",
 
-          "/opt/aws/bin/cfn-init -v ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource BarneyLaunchConfig ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "/opt/aws/bin/cfn-signal -e $? ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource BarneyGroup ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "# Install NodeJS and NPM",
+          "# Install NodeJS and NPM", "\n",
+          "yum update -y", "\n",
           "yum install nodejs npm --enablerepo=epel -y", "\n",
           "npm install restify", "\n",
 
-          "# Get the service and start",
+          "# Get the service and start","\n",
           "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/barney.js", "\n",
           "nohup node barney.js > ~/std.out &", "\n"
@@ -361,52 +287,14 @@
         "Comment" : "Install a simple application",
         "AWS::CloudFormation::Init" : {
           "config" : {
-            "packages" : {
-              "yum" : {
-                "httpd" : []
-              }
-            },
-
             "files" : {
-              "/var/www/html/index.html" : {
-                "content" : { "Fn::Join" : ["\n", [
-                  "<img src=\"https://s3.amazonaws.com/cloudformation-examples/cloudformation_graphic.png\" alt=\"AWS CloudFormation Logo\"/>",
-                  "<h1>Congratulations, you have successfully launched the AWS CloudFormation sample.</h1>"
-                ]]},
-                "mode"    : "000644",
-                "owner"   : "root",
-                "group"   : "root"
-              },
-
-              "/etc/cfn/cfn-hup.conf" : {
+              "/tmp/message" : {
                 "content" : { "Fn::Join" : ["", [
-                  "[main]\n",
-                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
-                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                  "hello"
                 ]]},
                 "mode"    : "000400",
                 "owner"   : "root",
                 "group"   : "root"
-              },
-
-              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
-                "content": { "Fn::Join" : ["", [
-                  "[cfn-auto-reloader-hook]\n",
-                  "triggers=post.update\n",
-                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
-                  "action=/opt/aws/bin/cfn-init -v ",
-                  "         --stack ", { "Ref" : "AWS::StackName" },
-                  "         --resource CarlesLaunchConfig ",
-                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
-                  "runas=root\n"
-                ]]}
-              }
-            },
-
-            "services" : {
-              "sysvinit" : {
-                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
-                  "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
               }
             }
           }
@@ -418,25 +306,16 @@
           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "SecurityGroups" : { "Ref" : "SecurityGroupList"},
         "InstanceType" : { "Ref" : "InstanceType" },
+        "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
-          "yum update -y aws-cfn-bootstrap\n",
 
-          "/opt/aws/bin/cfn-init -v ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource CarlesLaunchConfig ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "/opt/aws/bin/cfn-signal -e $? ",
-          "         --stack ", { "Ref" : "AWS::StackName" },
-          "         --resource CarlesGroup ",
-          "         --region ", { "Ref" : "AWS::Region" }, "\n",
-
-          "# Install NodeJS and NPM",
+          "# Install NodeJS and NPM",  "\n",
+          "yum update -y", "\n",
           "yum install nodejs npm --enablerepo=epel -y", "\n",
           "npm install restify", "\n",
 
-          "# Get the service and start",
+          "# Get the service and start", "\n",
           "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/carles.js", "\n",
           "nohup node carles.js > ~/std.out &", "\n"

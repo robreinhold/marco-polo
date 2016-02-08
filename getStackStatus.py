@@ -16,7 +16,7 @@ def main():
         detail = scale_group[u'DescribeStackResourceResponse'][u'DescribeStackResourceResult'][u'StackResourceDetail']
         group_id = detail[u'PhysicalResourceId']
         group_status = detail[u'ResourceStatus']
-        print "Found {0} - {1}".format(group_id, group_status)
+        print "\nFound {0} - {1}".format(group_id, group_status)
         group_detail = as_conn.get_all_groups(names=[group_id])[0]
         instance_ids = []
         for instance_ref in group_detail.instances:
@@ -24,10 +24,9 @@ def main():
 
         for instance in ec2_conn.get_only_instances(instance_ids=instance_ids):
             url = "http://" + instance.private_ip_address + ":8080"
-            print "Trying {0}".format(url, timeout=3)
             try:
-                resp = requests.get(url)
-                print resp
+                resp = requests.get(url, timeout=3)
+                print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
             except requests.exceptions.ConnectionError:
                 print "No response: {0}".format(instance.private_ip_address)
 
