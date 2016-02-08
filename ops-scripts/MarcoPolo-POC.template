@@ -183,7 +183,7 @@
 
           "# Get the service and start", "\n",
           "cd ~", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/alice.js", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/alice.js", "\n",
           "nohup node alice.js > ~/std.out &", "\n"
 
         ]]}}
@@ -250,7 +250,7 @@
 
           "# Get the service and start","\n",
           "cd ~", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/barney.js", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/barney.js", "\n",
           "nohup node barney.js > ~/std.out &", "\n"
 
         ]]}}
@@ -317,7 +317,7 @@
 
           "# Get the service and start", "\n",
           "cd ~", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/carles.js", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/carles.js", "\n",
           "nohup node carles.js > ~/std.out &", "\n"
 
         ]]}}
