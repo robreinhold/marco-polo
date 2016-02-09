@@ -144,7 +144,7 @@
 
           "#Install consul and server config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
-          "chmod +x ~/consul/consul", "\n",
+          "chmod +x ~/consul", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json -O ~/server-config.json", "\n",
           "mkdir /opt/consul", "\n",
           "export LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)", "\n",
@@ -220,11 +220,10 @@
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
-          "chmod +x ~/consul/consul", "\n",
+          "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
-          "export LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)", "\n",
-          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIpAddress" ] },
-          "nohup ~/consul agent -client $LOCAL_IP -pid-file ~/consul.pid -join $SERVER_IP &", "\n"
+          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
 
         ]]}}
       }
@@ -291,7 +290,14 @@
           "# Get the service and start","\n",
           "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/barney.js", "\n",
-          "nohup node barney.js > ~/std.out &", "\n"
+          "nohup node barney.js > ~/std.out &", "\n",
+
+          "#Install consul and agent config", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "chmod +x ~/consul", "\n",
+          "mkdir /opt/consul", "\n",
+          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
 
         ]]}}
       }
@@ -363,8 +369,13 @@
           "# Install Consul", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/ops-scripts/consul -O /usr/sbin/consul", "\n",
           "chmod +x /usr/sbin/consul", "\n",
-          "", "\n",
-          ""
+
+          "#Install consul and agent config", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "chmod +x ~/consul", "\n",
+          "mkdir /opt/consul", "\n",
+          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
         ]]}}
       }
     }
