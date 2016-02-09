@@ -220,10 +220,11 @@
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/rest-services/alice-service.json -O ~/alice-service.json", "\n",
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/alice-service.json &", "\n"
 
         ]]}}
       }
@@ -294,10 +295,11 @@
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/rest-services/barney-service.json -O ~/barney-service.json", "\n",
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/barney-service.json &", "\n"
 
         ]]}}
       }
@@ -368,10 +370,11 @@
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/rest-services/carles-service.json -O ~/carles-service.json", "\n",
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test &", "\n"
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file carles-service.json &", "\n"
         ]]}}
       }
     }
