@@ -1,0 +1,7 @@
+{
+  "datacenter": "us-west-1-test",
+  "data_dir": "/root/consul",
+  "log_level": "DEBUG",
+  "node_name": "server",
+  "server": true
+}

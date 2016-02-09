@@ -10,9 +10,11 @@ def main():
     as_conn = boto.ec2.autoscale.connect_to_region("us-west-2")
     cf_conn = boto.cloudformation.connect_to_region("us-west-2")
 
+    stack_name = "reinhold-mp"
+
     group_names = []
     for group_name in ["AliceGroup", "BarneyGroup", "CarlesGroup"]:
-        scale_group = cf_conn.describe_stack_resource("reinhold-mp",group_name)
+        scale_group = cf_conn.describe_stack_resource(stack_name,group_name)
         detail = scale_group[u'DescribeStackResourceResponse'][u'DescribeStackResourceResult'][u'StackResourceDetail']
         group_id = detail[u'PhysicalResourceId']
         group_status = detail[u'ResourceStatus']
@@ -29,6 +31,19 @@ def main():
                 print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
             except requests.exceptions.ConnectionError:
                 print "No response: {0}".format(instance.private_ip_address)
+
+    consul_server_resource = cf_conn.describe_stack_resource(stack_name, "ConsulServer")[u'DescribeStackResourceResponse'][u'DescribeStackResourceResult'][u'StackResourceDetail']
+    instance = ec2_conn.get_only_instances(instance_ids=consul_server_resource[u'PhysicalResourceId'])[0]
+    url = "http://" + instance.private_ip_address + ":8500/peers"
+    print "\nChecking Consul"
+    try:
+        resp = requests.get(url, timeout=3)
+        print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+    except requests.exceptions.ConnectionError:
+        print "No response: {0}".format(instance.private_ip_address)
+
+
+
 
 
 

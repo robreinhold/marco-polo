@@ -123,6 +123,32 @@
       }
     },
 
+    "ConsulServer" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "IamInstanceProfile" : "e3-prime-instance",
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "SecurityGroupIds" : { "Ref" : "SecurityGroupList"},
+        "SubnetId" : "subnet-86fecaf2",
+        "Tags" : [
+          {
+            "Key" : "Name",
+            "Value" : "MarcoPolo - Consul Service"
+          }
+        ],
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -xe\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul/consul", "\n",
+          "chmod +x ~/consul/consul", "\n",
+          "", "\n",
+          ""
+        ]]}}
+      }
+    },
+
     "AliceGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
@@ -309,6 +335,7 @@
         "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
+          "cd ~", "\n",
 
           "# Install NodeJS and NPM",  "\n",
           "yum update -y", "\n",
@@ -316,10 +343,14 @@
           "npm install restify", "\n",
 
           "# Get the service and start", "\n",
-          "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/carles.js", "\n",
-          "nohup node carles.js > ~/std.out &", "\n"
+          "nohup node carles.js > ~/std.out &", "\n",
 
+          "# Install Consul", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/ops-scripts/consul -O /usr/sbin/consul", "\n",
+          "chmod +x /usr/sbin/consul", "\n",
+          "", "\n",
+          ""
         ]]}}
       }
     }
