@@ -366,10 +366,6 @@
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/carles.js", "\n",
           "nohup node carles.js > ~/std.out &", "\n",
 
-          "# Install Consul", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/ops-scripts/consul -O /usr/sbin/consul", "\n",
-          "chmod +x /usr/sbin/consul", "\n",
-
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
           "chmod +x ~/consul", "\n",

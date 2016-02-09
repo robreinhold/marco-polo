@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "alice",
+    "tags": ["master"],
+    "port": 8080,
+    "checks": [
+      {
+        "HTTP": "http://localhost:8080/",
+        "interval": "10s"
+      }
+    ]
+  }
+}
