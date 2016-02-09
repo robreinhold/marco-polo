@@ -147,7 +147,7 @@
           "chmod +x ~/consul/consul", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json ~/server-config.json", "\n",
           "mkdir /opt/consul", "\n",
-          "~/consul -server -config-file ~/server-config.json", "\n",
+          "~/nohup consul agent -pid-file ~/consul.pid -config-file ~/server-config.json &", "\n",
           "", "\n",
           ""
         ]]}}

@@ -3,5 +3,7 @@
   "data_dir": "/opt/consul",
   "log_level": "DEBUG",
   "node_name": "server",
-  "server": true
+  "server": true,
+  "bootstrap": true,
+  "ui": true
 }
