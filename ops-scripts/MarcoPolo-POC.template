@@ -143,10 +143,12 @@
           "#!/bin/bash -xe\n",
 
           "#Install consul and server config", "\n",
-          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul/consul", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
           "chmod +x ~/consul/consul", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json ~/consul/server-config.json", "\n",
-          "~/consul/consul -server -config-file ~/consul/server-config.json", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json ~/server-config.json", "\n",
+          "mkdir /opt/consul", "\n",
+          "~/consul -server -config-file ~/server-config.json", "\n",
+          "", "\n",
           ""
         ]]}}
       }
