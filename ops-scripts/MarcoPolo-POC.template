@@ -55,7 +55,7 @@
     "SecurityGroupList" : {
       "Description" : "Security groups to apply",
       "Type" : "List<AWS::EC2::SecurityGroup::Id>",
-      "Default": "sg-cca751a3,sg-a7a751c8,sg-afa751c0"
+      "Default": "sg-cca751a3,sg-a7a751c8,sg-afa751c0,sg-95942bf1"
     }
 
   },
