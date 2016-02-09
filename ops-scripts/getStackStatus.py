@@ -4,6 +4,8 @@ import boto
 import boto.cloudformation
 import boto.ec2.autoscale
 import requests
+import json
+
 
 def main():
     ec2_conn = boto.ec2.connect_to_region("us-west-2")
@@ -34,11 +36,23 @@ def main():
 
     consul_server_resource = cf_conn.describe_stack_resource(stack_name, "ConsulServer")[u'DescribeStackResourceResponse'][u'DescribeStackResourceResult'][u'StackResourceDetail']
     instance = ec2_conn.get_only_instances(instance_ids=consul_server_resource[u'PhysicalResourceId'])[0]
-    url = "http://" + instance.private_ip_address + ":8500/v1/catalog/nodes"
     print "\nChecking Consul Server"
     try:
+        url = "http://" + instance.private_ip_address + ":8500/v1/catalog/nodes"
         resp = requests.get(url, timeout=3)
         print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+        url = "http://" + instance.private_ip_address + ":8500/v1/catalog/services"
+        resp = requests.get(url, timeout=3)
+        services = json.loads(resp.content)
+        print "-> {0} - {1} - {2}".format(url, services, resp.content)
+        for service in services:
+            url = "http://" + instance.private_ip_address + ":8500/v1/catalog/service/" + service
+            resp = requests.get(url, timeout=3)
+            print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+            url = "http://" + instance.private_ip_address + ":8500/v1/health/checks/" + service
+            resp = requests.get(url, timeout=3)
+            print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+        print services
     except requests.exceptions.ConnectionError:
         print "No response: {0}".format(instance.private_ip_address)
 
