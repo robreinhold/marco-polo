@@ -145,9 +145,10 @@
           "#Install consul and server config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
           "chmod +x ~/consul/consul", "\n",
-          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json ~/server-config.json", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json -O ~/server-config.json", "\n",
           "mkdir /opt/consul", "\n",
-          "~/nohup consul agent -pid-file ~/consul.pid -config-file ~/server-config.json &", "\n",
+          "export LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)", "\n",
+          "nohup ~/consul agent -client $LOCAL_IP -pid-file ~/consul.pid -config-file ~/server-config.json &", "\n",
           "", "\n",
           ""
         ]]}}
@@ -215,7 +216,15 @@
           "# Get the service and start", "\n",
           "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/alice.js", "\n",
-          "nohup node alice.js > ~/std.out &", "\n"
+          "nohup node alice.js > ~/std.out &", "\n",
+
+          "#Install consul and agent config", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "chmod +x ~/consul/consul", "\n",
+          "mkdir /opt/consul", "\n",
+          "export LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)", "\n",
+          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIpAddress" ] },
+          "nohup ~/consul agent -client $LOCAL_IP -pid-file ~/consul.pid -join $SERVER_IP &", "\n"
 
         ]]}}
       }

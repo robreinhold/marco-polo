@@ -34,8 +34,8 @@ def main():
 
     consul_server_resource = cf_conn.describe_stack_resource(stack_name, "ConsulServer")[u'DescribeStackResourceResponse'][u'DescribeStackResourceResult'][u'StackResourceDetail']
     instance = ec2_conn.get_only_instances(instance_ids=consul_server_resource[u'PhysicalResourceId'])[0]
-    url = "http://" + instance.private_ip_address + ":8500/peers"
-    print "\nChecking Consul"
+    url = "http://" + instance.private_ip_address + ":8500/v1/status/peers"
+    print "\nChecking Consul Server"
     try:
         resp = requests.get(url, timeout=3)
         print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
