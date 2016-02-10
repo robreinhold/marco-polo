@@ -32,7 +32,7 @@ var server = http.createServer(function(req, res) {
                 proxy.web(req, res, { target: dest_url });
             } else {
                 res.writeHead(404);
-                res.end("polo-proxy: parsed '" + service_name + "' out of URL, but could not find live service of that name in consul.");
+                res.end("polo-proxy: parsed '" + service_name + "' out of URL, but could not find healthy service with that name in consul.");
             }
         });
     }

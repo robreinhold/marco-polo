@@ -216,7 +216,13 @@
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/alice-service.json &", "\n"
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/alice-service.json &", "\n",
+
+          "#Install the magic proxy", "\n",
+          "", "\n",
+          "", "\n",
+          "", "\n",
+          "", "\n",
 
         ]]}}
       }
