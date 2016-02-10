@@ -46,12 +46,13 @@ def main():
         services = json.loads(resp.content)
         print "-> {0} - {1} - {2}".format(url, services, resp.content)
         for service in services:
+            print "-> " + service
             url = "http://" + instance.private_ip_address + ":8500/v1/catalog/service/" + service
             resp = requests.get(url, timeout=3)
-            print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
-            url = "http://" + instance.private_ip_address + ":8500/v1/health/checks/" + service
+            print "---> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+            url = "http://" + instance.private_ip_address + ":8500/v1/health/service/" + service
             resp = requests.get(url, timeout=3)
-            print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
+            print "---> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
         print services
     except requests.exceptions.ConnectionError:
         print "No response: {0}".format(instance.private_ip_address)
