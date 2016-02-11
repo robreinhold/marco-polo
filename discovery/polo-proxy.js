@@ -7,7 +7,7 @@ if(args.length != 1) {
     throw Error("Need 1 arguments: Consul agent URL")
 }
 var consul_url = args[0];
-var consul = require('consul')({host: consul_url, promisify: true});
+var consul = require('consul')({host: consul_url});
 
 var proxy = http_proxy.createProxyServer({ignorePath: true});
 
@@ -15,7 +15,7 @@ var server = http.createServer(function(req, res) {
     url_segs = req.url.split('/');
     if(url_segs.length >= 2) {
         service_name = url_segs[1];
-        consul.health.service(service_name).then(function(health_check_responses) {
+        consul.health.service(service_name, function(err, health_check_responses) {
             for(var i=0; i<health_check_responses.length; i++) {
                 check_response = health_check_responses[i];
                 service_id = check_response.Service.ID;

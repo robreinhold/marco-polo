@@ -56,6 +56,12 @@
       "Description" : "Security groups to apply",
       "Type" : "List<AWS::EC2::SecurityGroup::Id>",
       "Default": "sg-cca751a3,sg-a7a751c8,sg-afa751c0,sg-95942bf1"
+    },
+
+    "NotificationTopic": {
+      "Description" : "SNS Topic to notify on",
+      "Type" : "String",
+      "Default" : "arn:aws:sns:us-west-2:408096535527:robert-reinhold-test-topic"
     }
 
   },
@@ -108,13 +114,6 @@
   },
 
   "Resources" : {
-    "NotificationTopic": {
-      "Type": "AWS::SNS::Topic",
-      "Properties": {
-        "Subscription": [ { "Endpoint": { "Ref": "OperatorEMail" }, "Protocol": "email" } ]
-      }
-    },
-
     "ConsulServer" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
@@ -199,14 +198,15 @@
         "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
+          "cd ~", "\n",
 
-          "# Install NodeJS and NPM", "\n",
+          "# Install NodeJS and NPM. If consul executable is in root dir, npm gets confused installing consul module", "\n",
           "yum install npm --enablerepo=epel -y", "\n",
-          "npm install n restify http-proxy consul promi", "\n",
+          "npm install restify http-proxy consul@latest", "\n",
+          "npm install -g n", "\n",
           "n 4.2.4", "\n",
 
           "# Get the service and start", "\n",
-          "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/alice.js", "\n",
           "nohup node alice.js > ~/alice.out &", "\n",
 
@@ -278,14 +278,15 @@
         "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
+          "cd ~", "\n",
 
-          "# Install NodeJS and NPM", "\n",
+          "# Install NodeJS and NPM. If consul executable is in root dir, npm gets confused installing consul module", "\n",
           "yum install npm --enablerepo=epel -y", "\n",
-          "npm install n restify http-proxy consul promi", "\n",
+          "npm install restify http-proxy consul@latest", "\n",
+          "npm install -g n", "\n",
           "n 4.2.4", "\n",
 
           "# Get the service and start","\n",
-          "cd ~", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/barney.js", "\n",
           "nohup node barney.js > ~/std.out &", "\n",
 
@@ -359,9 +360,10 @@
           "#!/bin/bash -xe\n",
           "cd ~", "\n",
 
-          "# Install NodeJS and NPM", "\n",
+          "# Install NodeJS and NPM. If consul executable is in root dir, npm gets confused installing consul module", "\n",
           "yum install npm --enablerepo=epel -y", "\n",
-          "npm install n restify http-proxy consul promi", "\n",
+          "npm install restify http-proxy consul@latest", "\n",
+          "npm install -g n", "\n",
           "n 4.2.4", "\n",
 
           "# Get the service and start", "\n",

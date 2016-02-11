@@ -44,16 +44,15 @@ def main():
     instance = ec2_conn.get_only_instances(instance_ids=consul_server_resource[u'PhysicalResourceId'])[0]
     print "\nChecking Consul Server"
     try:
-        try_get(instance.private_ip_address, 8500, '/v1//catalog/nodes')
-        try_get(instance.private_ip_address, 8500, '/v1/catalog/services')
-        resp = requests.get("http://" + instance.private_ip_address + ":8500/v1/catalog/services", timeout=3)
+        url = "http://" + instance.private_ip_address + ":8500/v1/catalog/services"
+        resp = requests.get(url, timeout=3)
         services = json.loads(resp.content)
         for service in services:
             print service
-            try_get(instance.private_ip_address, 8500, '/v1/catalog/service/{}'.format(service))
-            try_get(instance.private_ip_address, 8500, '/v1/health/service/{}'.format(service))
+            try_get(instance.private_ip_address, 8500, 'v1/catalog/service/{}'.format(service))
+            try_get(instance.private_ip_address, 8500, 'v1/health/service/{}'.format(service))
     except requests.exceptions.ConnectionError:
-        print "No response: {0}".format(instance.private_ip_address)
+        print "No response: {0}".format(url)
 
 
 
