@@ -43,7 +43,7 @@
     "ScaleGroupSize" : {
       "Description" : "The # of instances to run in parallel. Same value is used for each 'service' - Alice, Bob, Charlie",
       "Type": "Number",
-      "Default": "1"
+      "Default": "5"
     },
 
     "SubnetList" : {
