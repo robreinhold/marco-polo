@@ -6,7 +6,7 @@
     "checks": [
       {
         "HTTP": "http://localhost:8080/",
-        "interval": "10s"
+        "interval": "1s"
       }
     ]
   }

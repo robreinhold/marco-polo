@@ -36,6 +36,7 @@ def main():
             instance_ids.append(instance_ref.instance_id)
 
         for instance in ec2_conn.get_only_instances(instance_ids=instance_ids):
+            print(instance.private_ip_address)
             try_get(ip=instance.private_ip_address, port=8080)
             for name in remote_names:
                 try_get(ip=instance.private_ip_address, port=8080, path='remote/' + name)
