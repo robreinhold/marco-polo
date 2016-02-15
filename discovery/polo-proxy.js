@@ -12,11 +12,11 @@ var consul = require('consul')({host: consul_url});
 var proxy = http_proxy.createProxyServer({ignorePath: true});
 
 var server = http.createServer(function(req, res) {
-    var url_segs = req.url.split('/');
-    if(url_segs.length >= 2) {
-        var service_name = url_segs[1];
-        consul.health.service(service_name, function(err, health_check_responses) {
-            try {
+    try {
+        var url_segs = req.url.split('/');
+        if (url_segs.length >= 2) {
+            var service_name = url_segs[1];
+            consul.health.service(service_name, function (err, health_check_responses) {
                 var valid_urls = [];
                 for (var i = 0; i < health_check_responses.length; i++) {
                     var check_response = health_check_responses[i];
@@ -39,10 +39,10 @@ var server = http.createServer(function(req, res) {
                     res.writeHead(404);
                     res.end("polo-proxy: parsed '" + service_name + "' out of URL, but could not find healthy service with that name in consul.");
                 }
-            } catch (ex) {
-                console.log("Error: " + ex.toString());
-            }
-        });
+            });
+        }
+    } catch (err) {
+        console.log(err.toString());
     }
 });
 
