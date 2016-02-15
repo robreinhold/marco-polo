@@ -139,7 +139,7 @@
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/server-config.json -O ~/server-config.json", "\n",
           "mkdir /opt/consul", "\n",
           "export LOCAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)", "\n",
-          "nohup ~/consul agent -client $LOCAL_IP -pid-file ~/consul.pid -config-file ~/server-config.json &", "\n",
+          "nohup ~/consul agent -client $LOCAL_IP -pid-file ~/consul.pid -config-file ~/server-config.json > ~/consul.log &", "\n",
           "", "\n",
           ""
         ]]}}
@@ -216,7 +216,7 @@
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/alice-service.json &", "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/alice-service.json > ~/consul.log &", "\n",
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
@@ -296,7 +296,7 @@
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/barney-service.json &", "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file ~/barney-service.json > ~/consul.log &", "\n",
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
@@ -376,7 +376,7 @@
           "chmod +x ~/consul", "\n",
           "mkdir /opt/consul", "\n",
           "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
-          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file carles-service.json &", "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test -config-file carles-service.json > ~/consul.log &", "\n",
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
