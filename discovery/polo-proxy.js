@@ -40,14 +40,7 @@ var server = http.createServer(function(req, res) {
                     res.end("polo-proxy: parsed '" + service_name + "' out of URL, but could not find healthy service with that name in consul.");
                 }
             } catch (ex) {
-                res.writeHead(500);
-                var vDebug = "";
-                for (var prop in ex)
-                {
-                    vDebug += "property: "+ prop+ " value: ["+ ex[prop]+ "]\n";
-                }
-                vDebug += "toString(): " + " value: [" + ex.toString() + "]";
-                res.end(vDebug);
+                console.log("Error: " + ex.toString());
             }
         });
     }

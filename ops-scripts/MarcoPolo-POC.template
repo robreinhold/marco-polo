@@ -208,7 +208,7 @@
 
           "# Get the service and start", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/alice.js", "\n",
-          "nohup node alice.js > ~/alice.out &", "\n",
+          "nohup node alice.js > ~/alice.out 2>&1 &", "\n",
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
@@ -220,7 +220,7 @@
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
-          "nohup node polo-proxy.js localhost > ~/proxy.out &", "\n"
+          "nohup node polo-proxy.js localhost > ~/proxy.out 2>&1 &", "\n"
 
         ]]}}
       }
@@ -288,7 +288,7 @@
 
           "# Get the service and start","\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/barney.js", "\n",
-          "nohup node barney.js > ~/std.out &", "\n",
+          "nohup node barney.js > ~/barney.out 2>&1 &", "\n",
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
@@ -300,7 +300,7 @@
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
-          "nohup node polo-proxy.js localhost > ~/proxy.out &", "\n"
+          "nohup node polo-proxy.js localhost > ~/proxy.out 2>&1 &", "\n"
 
         ]]}}
       }
@@ -368,7 +368,7 @@
 
           "# Get the service and start", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/carles.js", "\n",
-          "nohup node carles.js > ~/std.out &", "\n",
+          "nohup node carles.js > ~/carles.out 2>&1 &", "\n",
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
@@ -380,7 +380,7 @@
 
           "#Install the magic proxy", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/discovery/polo-proxy.js", "\n",
-          "nohup node polo-proxy.js localhost > ~/proxy.out &", "\n"
+          "nohup node polo-proxy.js localhost > ~/proxy.out 2>&1 &", "\n"
         ]]}}
       }
     }
