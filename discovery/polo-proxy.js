@@ -1,48 +1,52 @@
 var http = require('http');
-var http_proxy = require('http-proxy');
+var httpProxy = require('http-proxy');
 
 // Required Arg: consul agent URL
 var args = process.argv.slice(2);
 if(args.length != 1) {
     throw Error("Need 1 arguments: Consul agent URL")
 }
-var consul_url = args[0];
-var consul = require('consul')({host: consul_url});
+var consulUrl = args[0];
+var consul = require('consul')({host: consulUrl});
 
-var proxy = http_proxy.createProxyServer({ignorePath: true});
+var proxy = httpProxy.createProxyServer({ignorePath: true});
 
 var server = http.createServer(function(req, res) {
     try {
-        var url_segs = req.url.split('/');
-        if (url_segs.length >= 2) {
-            var service_name = url_segs[1];
-            consul.health.service(service_name, function (err, health_check_responses) {
-                var valid_urls = [];
-                for (var i = 0; i < health_check_responses.length; i++) {
-                    var check_response = health_check_responses[i];
-                    var service_id = check_response.Service.ID;
-                    var checks = check_response.Checks;
-                    var dest_url = null;
+        var urlSegs = req.url.split('/');
+        if (urlSegs.length >= 2) {
+            var serviceName = urlSegs[1];
+            consul.health.service(serviceName, function (err, healthCheckResponses) {
+                var validUrls = [];
+                for (var i = 0; i < healthCheckResponses.length; i++) {
+                    var checkResponse = healthCheckResponses[i];
+                    var serviceId = checkResponse.Service.ID;
+                    var checks = checkResponse.Checks;
+                    var destUrl = null;
                     for (var j = 0; j < checks.length; j++) {
                         var chk = checks[j];
-                        if (chk.CheckID == "service:" + service_id && chk.Status == "passing") {
-                            valid_urls.push("http://" + check_response.Node.Address + ":" + check_response.Service.Port);
+                        if (chk.CheckID == "service:" + serviceId && chk.Status == "passing") {
+                            validUrls.push("http://" + checkResponse.Node.Address + ":" + checkResponse.Service.Port);
                         }
                     }
                 }
-                var num_urls = valid_urls.length;
-                if (num_urls > 0) {
+                var numUrls = validUrls.length;
+                if (numUrls > 0) {
                     //Dumb load balancing - we have at least 1 healthy URL, pick one at random
-                    var url_index = Math.floor(Math.random() * num_urls);
-                    proxy.web(req, res, {target: valid_urls[url_index]});
+                    var url_index = Math.floor(Math.random() * numUrls);
+                    try {
+                        proxy.web(req, res, {target: validUrls[url_index]});
+                    } catch (err) {
+                        console.log("Error during proxy call: " + err.toString());
+                    }
                 } else {
                     res.writeHead(404);
-                    res.end("polo-proxy: parsed '" + service_name + "' out of URL, but could not find healthy service with that name in consul.");
+                    res.end("polo-proxy: parsed '" + serviceName + "' out of URL, but could not find healthy service with that name in consul.");
                 }
             });
         }
     } catch (err) {
-        console.log(err.toString());
+        console.log("Error setting up server: " + err.toString());
     }
 });
 
