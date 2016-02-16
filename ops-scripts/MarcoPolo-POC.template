@@ -361,7 +361,7 @@
           "cd ~", "\n",
 
           "# Install NodeJS and NPM. If consul executable is in root dir, npm gets confused installing consul module", "\n",
-          "yum install npm --enablerepo=epel -y", "\n",
+          "until `yum install npm --enablerepo=epel -y`; do echo 'Yum command failed, looping to try again'; done", "\n",
           "npm install restify http-proxy consul@latest", "\n",
           "npm install -g n", "\n",
           "n 4.2.4", "\n",

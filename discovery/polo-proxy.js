@@ -18,6 +18,10 @@ var server = http.createServer(function(req, res) {
             var serviceName = urlSegs[1];
             consul.health.service(serviceName, function (err, healthCheckResponses) {
                 var validUrls = [];
+                //Fake service name to simulate "ECONNREFUSED" error that keeps crashing this
+                if("crashit" == serviceName) {
+                    validUrls.push("http://localhost:9999");
+                }
                 for (var i = 0; i < healthCheckResponses.length; i++) {
                     var checkResponse = healthCheckResponses[i];
                     var serviceId = checkResponse.Service.ID;
@@ -48,6 +52,11 @@ var server = http.createServer(function(req, res) {
     } catch (err) {
         console.log("Error setting up server: " + err.toString());
     }
+});
+
+proxy.on('error', function(err, req, res) {
+    res.writeHead(404);
+    res.end("Error during proxy call: " + err.toString());
 });
 
 port = 5050;
