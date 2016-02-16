@@ -10,7 +10,7 @@ import json
 def try_get(ip, port, path=''):
     try:
         url = "http://{0}:{1}/{2}".format(ip, port, path)
-        resp = requests.get(url, timeout=3)
+        resp = requests.get(url, timeout=2)
         print "-> {0} - {1} - {2}".format(url, resp.status_code, resp.content)
     except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
         print "No response: {0} - {1}".format(ip, url)
