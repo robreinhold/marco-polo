@@ -15,7 +15,7 @@ var logit = function(str) {
 
 server.get('/', function (req, res, next) {
     logit('/');
-    res.send("Hola, soy Carles");
+    res.send("Hola, soc en Carles");
     return next();
 });
 
