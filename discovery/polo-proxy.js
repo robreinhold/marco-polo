@@ -21,6 +21,8 @@ var server = http.createServer(function(req, res) {
                 //Fake service name to simulate "ECONNREFUSED" error that keeps crashing this
                 if("crashit" == serviceName) {
                     validUrls.push("http://localhost:9999");
+                } else if ("local" == serviceName) {
+                    validUrls.push("http://localhost:8080/big")
                 }
                 for (var i = 0; i < healthCheckResponses.length; i++) {
                     var checkResponse = healthCheckResponses[i];
