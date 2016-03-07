@@ -20,19 +20,44 @@ server.get('/', function (req, res, next) {
 });
 
 var longStr = "blahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblah";
-var payload = longStr;
 //1000000 gives ~80M
 // 100000 gives ~8M
 //  10000 gives ~800K
-for(var i=0; i < 100000; i++) {
-    payload += longStr
+big = "80K ";
+bigger = "8MB ";
+biggest = "80MB ";
+
+for(var i=0; i < 10000; i++) {
+    big += longStr;
+    for(var j=0; j < 10; j++) {
+        bigger += longStr;
+        for(var k=0; k<10; k++) {
+            biggest += longStr;
+        }
+    }
 }
 
 server.get('/big', function (req, res, next) {
     logit('/big');
     console.time('big');
-    res.send(payload);
+    res.send(big);
     console.timeEnd('big');
+    return next();
+});
+
+server.get('/bigger', function (req, res, next) {
+    logit('/bigger');
+    console.time('bigger');
+    res.send(bigger);
+    console.timeEnd('bigger');
+    return next();
+});
+
+server.get('/biggest', function (req, res, next) {
+    logit('/biggest');
+    console.time('biggest');
+    res.send(biggest);
+    console.timeEnd('biggest');
     return next();
 });
 
@@ -40,15 +65,6 @@ server.on('after', function (req, resp, route, err) {
     console.log(err);
 });
 
-// Call this to use the localhost polo-proxy router
-var client = restify.createJSONClient({url: 'http://localhost:5050'});
-server.get('/remote/:name', function (req, res, next) {
-    logit(req.params.name);
-    client.get("/" + req.params.name, function(cerr, creq, cres) {
-        res.send(cres.body);
-    });
-    return next();
-});
 
 server.listen(8080, function () {
     console.log('%s listening at %s', server.name, server.url);

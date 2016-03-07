@@ -1,0 +1,55 @@
+worker_processes 4;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    # General Settings
+    error_log /var/log/nginx/rob.error;
+    access_log /var/log/nginx/rob.access;   
+    gzip  on;
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay off;
+    server_tokens off;
+    include mime.types;
+    keepalive_timeout 5;
+    default_type  application/octet-stream;
+    
+{{range services}}
+    upstream {{.Name}} {
+    
+        server 1.1.1.1:8080;
+    }
+{{end}}
+
+    server {
+        listen 5050 default_server;
+
+        location / {
+            return 200 'Dockerized Consul-Templetized Nginx is listening...';
+            add_header Content-Type text/plain;
+        }
+        location /google {
+            # To test connectivity with outside world
+            rewrite .* / break;
+            proxy_pass http://www.google.com;
+        }
+        location /alice {
+            rewrite .* / break;
+            proxy_pass http://alice;
+        }
+      
+        location /barney {
+            rewrite .* / break;
+            proxy_pass http://barney;
+        }
+
+        location /carles{
+            rewrite .* / break;
+            proxy_pass http://carles;
+        }
+    }
+}
+
