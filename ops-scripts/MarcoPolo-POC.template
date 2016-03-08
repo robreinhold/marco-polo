@@ -43,13 +43,13 @@
     "AliceGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "1"
+      "Default": "50"
     },
 
     "NginxGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "1"
+      "Default": "0"
     },
 
     "JmeterGroupSize" : {

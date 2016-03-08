@@ -2,14 +2,14 @@
 
 set +x
 
-if ! aws s3 cp MarcoPolo-POC.template s3://marco-polo-cloudformation/MarcoPolo-POC.template --profile write; then
+if ! aws s3 cp MarcoPolo-POC.template s3://marco-polo-cloudformation/MarcoPolo-POC.template ; then
     printf "Failed to copy template\n"
     exit 1
 fi
 
 
 printf "\Updating stack\n"
-if ! aws cloudformation update-stack --stack-name reinhold-mp --template-url https://s3-us-west-2.amazonaws.com/marco-polo-cloudformation/MarcoPolo-POC.template --profile write > /dev/null; then
+if ! aws cloudformation update-stack --stack-name reinhold-mp --template-url https://s3-us-west-2.amazonaws.com/marco-polo-cloudformation/MarcoPolo-POC.template  > /dev/null; then
     printf "Error calling create-stack\n"
     exit 1
 fi

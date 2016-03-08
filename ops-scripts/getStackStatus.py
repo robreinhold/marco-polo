@@ -63,8 +63,11 @@ def main():
     for stack_resource in cf_conn.describe_stack_resources(stack_name_or_id=stack_name):
         if(stack_resource.resource_type == u'AWS::AutoScaling::AutoScalingGroup'):
             instance_ids = get_instance_ids(stack_name=stack_name, group_name=stack_resource.logical_resource_id)
+            instance_count = 0
             for instance in ec2_conn.get_only_instances(instance_ids=instance_ids):
                 print "{}".format(instance.private_ip_address)
+                instance_count += 1
+            print "Total: {}".format(instance_count)
         elif(stack_resource.resource_type == u'AWS::ElasticLoadBalancing::LoadBalancer'):
             for elb in elb_conn.get_all_load_balancers(stack_resource.physical_resource_id):
                 print "\nELB: {}".format(stack_resource.physical_resource_id)

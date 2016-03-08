@@ -13,8 +13,8 @@ var logit = function(str) {
     console.log("%s - %s", ts, str);
 };
 
-server.get('/', function (req, res, next) {
-    logit('/');
+server.get('/tiny', function (req, res, next) {
+    logit('/tiny');
     res.send("Hello, I'm Alice");
     return next();
 });
@@ -37,8 +37,8 @@ for(var i=0; i < 10000; i++) {
     }
 }
 
-server.get('/big', function (req, res, next) {
-    logit('/big');
+server.get('/', function (req, res, next) {
+    logit('/');
     console.time('big');
     res.send(big);
     console.timeEnd('big');

@@ -17,11 +17,12 @@ http {
     keepalive_timeout 5;
     default_type  application/octet-stream;
     
-{{range services}}{{range service .Name}}
+{{range services}}
     upstream {{.Name}} {
-        server {{.Address}}:{{.Port}};
+{{range service .Name}}        server {{.Address}}:{{.Port}};
+{{end}}
     }
-{{end}}{{end}}
+{{end}}
 
     server {
         listen 8080 default_server;
@@ -35,11 +36,11 @@ http {
             rewrite .* / break;
             proxy_pass http://www.google.com;
         }
-{{range services}}{{range service .Name}}
+{{range services}}
         location /{{.Name}} {
             rewrite .* / break;
             proxy_pass http://{{.Name}};
-        } {{end}}{{end}}
+        } {{end}}
     }
 }
 
