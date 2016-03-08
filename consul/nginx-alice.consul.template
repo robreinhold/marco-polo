@@ -17,18 +17,17 @@ http {
     keepalive_timeout 5;
     default_type  application/octet-stream;
     
-{{range services}}
+{{range services}}{{range service .Name}}
     upstream {{.Name}} {
-    
-        server 1.1.1.1:8080;
+        server {{.Address}}:{{.Port}};
     }
-{{end}}
+{{end}}{{end}}
 
     server {
         listen 5050 default_server;
 
         location / {
-            return 200 'Dockerized Consul-Templetized Nginx is listening...';
+            return 200 'Consul-Templetized Nginx is listening...';
             add_header Content-Type text/plain;
         }
         location /google {
@@ -36,20 +35,11 @@ http {
             rewrite .* / break;
             proxy_pass http://www.google.com;
         }
-        location /alice {
+{{range services}}{{range service .Name}}
+        location /{{.Name}} {
             rewrite .* / break;
-            proxy_pass http://alice;
-        }
-      
-        location /barney {
-            rewrite .* / break;
-            proxy_pass http://barney;
-        }
-
-        location /carles{
-            rewrite .* / break;
-            proxy_pass http://carles;
-        }
+            proxy_pass http://{{.Name}};
+        } {{end}}{{end}}
     }
 }
 

@@ -315,7 +315,28 @@
         "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
-          "cd ~", "\n"
+          "cd ~", "\n",
+
+          "#Install nginx", "\n",
+          "yum install nginx -y", "\n",
+          "service nginx start", "\n",
+
+          "#Install consul and agent config", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",
+          "chmod +x ~/consul", "\n",
+          "mkdir /opt/consul", "\n",
+          "export SERVER_IP=", { "Fn::GetAtt": [ "ConsulServer", "PrivateIp" ] }, "\n",
+          "nohup ~/consul agent -pid-file ~/consul.pid -join $SERVER_IP -data-dir /opt/consul -dc us-west-1-test > ~/consul.log &", "\n",
+
+          "#Install consul template to create nginx config", "\n",
+          "wget https://releases.hashicorp.com/consul-template/0.13.0/consul-template_0.13.0_linux_amd64.zip", "\n",
+          "unzip consul-template_0.13.0_linux_amd64.zip", "\n",
+          "chmod +x consul-template", "\n",
+
+          "#Start up consul template so it syncs nginx config to consul state", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/nginx-alice.consul.template -O nginx-alice.consul.template", "\n",
+          "nohup ~/consul-template -consul localhost:8500 -template 'nginx-alice.consul.template:nginx.conf:cp nginx.conf /etc/nginx/nginx.conf && service nginx reload' > consul-template.log &", "\n",
+          "", "\n"
 
         ]]}}
       }
