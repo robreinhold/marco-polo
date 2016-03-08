@@ -189,6 +189,7 @@
         "LaunchConfigurationName" : { "Ref" : "AliceLaunchConfig" },
         "MinSize" : { "Ref" : "AliceGroupSize"},
         "MaxSize" : { "Ref" : "AliceGroupSize"},
+        "DesiredCapacity" : { "Ref" : "AliceGroupSize"},
         "VPCZoneIdentifier" : {"Ref" : "SubnetList"},
         "LoadBalancerNames" : [ { "Ref" : "AliceElb"} ],
         "Tags" : [
