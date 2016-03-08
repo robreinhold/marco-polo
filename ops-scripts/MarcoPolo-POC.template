@@ -352,7 +352,7 @@
         "Tags" : [
           {
             "Key" : "Name",
-            "Value" : "MarcoPolo - Carles Service",
+            "Value" : "MarcoPolo - JMeter",
             "PropagateAtLaunch" : "true"
           }
         ],
@@ -395,7 +395,13 @@
         "IamInstanceProfile" : "e3-prime-instance",
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -xe\n",
-          "cd ~", "\n"
+          "cd ~", "\n",
+
+          "# Install JMeter ", "\n",
+          "wget http://apache.claz.org//jmeter/binaries/apache-jmeter-2.13.tgz -O apache-jmeter-2.13.tgz", "\n",
+          "tar -xzf apache-jmeter-2.13.tgz", "\n",
+          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/nginx-consul-template.jmp -O ~/nginx-consul-template", "\n",
+          ""
         ]]}}
       }
     }

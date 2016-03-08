@@ -24,7 +24,7 @@ http {
 {{end}}{{end}}
 
     server {
-        listen 5050 default_server;
+        listen 8080 default_server;
 
         location / {
             return 200 'Consul-Templetized Nginx is listening...';
