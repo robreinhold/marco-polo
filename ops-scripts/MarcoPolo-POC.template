@@ -49,7 +49,7 @@
     "NginxGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "0"
+      "Default": "1"
     },
 
     "JmeterGroupSize" : {
@@ -401,7 +401,7 @@
           "# Install JMeter ", "\n",
           "wget http://apache.claz.org//jmeter/binaries/apache-jmeter-2.13.tgz -O apache-jmeter-2.13.tgz", "\n",
           "tar -xzf apache-jmeter-2.13.tgz", "\n",
-          "wget https://github.com/robreinhold/marco-polo/raw/master/consul/nginx-consul-template.jmp -O ~/nginx-consul-template", "\n",
+          "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/nginx-consul-template.jmx -O ~/nginx-consul-template.jmx", "\n",
           ""
         ]]}}
       }
