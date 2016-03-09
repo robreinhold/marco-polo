@@ -37,6 +37,14 @@ for(var i=0; i < 10000; i++) {
     }
 }
 
+server.get('/ping', function (req, res, next) {
+    logit('/');
+    console.time('ping');
+    res.send("Hello, my name is Alice!");
+    console.timeEnd('ping');
+    return next();
+});
+
 server.get('/', function (req, res, next) {
     logit('/');
     console.time('big');

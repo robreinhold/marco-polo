@@ -43,7 +43,7 @@
     "AliceGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "50"
+      "Default": "0"
     },
 
     "NginxGroupSize" : {
@@ -59,15 +59,21 @@
     },
 
     "SubnetList" : {
-      "Description" : "Subnets to attach to",
+      "Description" : "Subnet in vpc-5db72838",
       "Type" : "List<AWS::EC2::Subnet::Id>",
-      "Default": "subnet-86fecaf2,subnet-7d2c7a3b"
+      "Default": "subnet-4d16833a"
     },
 
     "SecurityGroupList" : {
       "Description" : "Security groups to apply",
       "Type" : "List<AWS::EC2::SecurityGroup::Id>",
-      "Default": "sg-cca751a3,sg-a7a751c8,sg-afa751c0,sg-95942bf1"
+      "Default": "sg-ab36f1cf,sg-5411df30,sg-46d23321"
+    },
+
+    "ElbHttpSecurityGroup" : {
+      "Description" : "Http Security group to apply to ELBs",
+      "Type" : "String",
+      "Default": "sg-5411df30"
     },
 
     "NotificationTopic": {
@@ -135,7 +141,7 @@
           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "InstanceType" : { "Ref" : "InstanceType" },
         "SecurityGroupIds" : { "Ref" : "SecurityGroupList"},
-        "SubnetId" : "subnet-86fecaf2",
+        "SubnetId" : "subnet-4d16833a",
         "Tags" : [
           {
             "Key" : "Name",
@@ -164,7 +170,7 @@
         "LoadBalancerName" : "MarcoPoloAliceELB",
         "Subnets" : {"Ref" : "SubnetList"},
         "Scheme" : "internal",
-        "SecurityGroups" : ["sg-afa751c0"],
+        "SecurityGroups" : [ { "Ref" : "ElbHttpSecurityGroup"}],
         "HealthCheck": {
           "HealthyThreshold" : "3",
           "Interval" : "15",
@@ -336,7 +342,7 @@
 
           "#Start up consul template so it syncs nginx config to consul state", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/nginx-alice.consul.template -O nginx-alice.consul.template", "\n",
-          "nohup ~/consul-template -consul localhost:8500 -template 'nginx-alice.consul.template:nginx.conf:cp nginx.conf /etc/nginx/nginx.conf && service nginx reload' > consul-template.log &", "\n",
+          "nohup ~/consul-template -consul localhost:8500 -log-level debug -syslog true -template 'nginx-alice.consul.template:nginx.conf:cp nginx.conf /etc/nginx/nginx.conf && service nginx reload' > consul-template.log &", "\n",
           "", "\n"
 
         ]]}}

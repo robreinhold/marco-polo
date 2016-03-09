@@ -29,4 +29,5 @@ until $(aws cloudformation describe-stacks --stack-name reinhold-mp | grep "Stac
     sleep 5
 done
 
-printf "\n\nStack is CREATE_COMPLETE. EC2 instances may still be bootstrapping\n\n"
+aws cloudformation describe-stacks --stack-name reinhold-mp | grep "StackStatus"
+

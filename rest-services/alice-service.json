@@ -5,7 +5,7 @@
     "port": 8080,
     "checks": [
       {
-        "HTTP": "http://localhost:8080/",
+        "HTTP": "http://localhost:8080/ping",
         "interval": "1s"
       }
     ]
