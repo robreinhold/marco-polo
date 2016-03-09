@@ -19,15 +19,15 @@ server.get('/tiny', function (req, res, next) {
     return next();
 });
 
-var longStr = "blahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblah";
+var longStr = "blahblahblahblahblahblahblahblahblahblahblahblahblahblahblah";
 //1000000 gives ~80M
 // 100000 gives ~8M
 //  10000 gives ~800K
-big = "80K ";
-bigger = "8MB ";
-biggest = "80MB ";
+big     = "6K   ";
+bigger  = "60K  ";
+biggest = "600K ";
 
-for(var i=0; i < 10000; i++) {
+for(var i=0; i < 100; i++) {
     big += longStr;
     for(var j=0; j < 10; j++) {
         bigger += longStr;

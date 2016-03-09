@@ -43,7 +43,7 @@
     "AliceGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "0"
+      "Default": "2"
     },
 
     "NginxGroupSize" : {
@@ -174,7 +174,7 @@
         "HealthCheck": {
           "HealthyThreshold" : "3",
           "Interval" : "15",
-          "Target" : "HTTP:8080/",
+          "Target" : "HTTP:8080/ping",
           "Timeout" : "5",
           "UnhealthyThreshold" : "2"
         },
@@ -342,7 +342,7 @@
 
           "#Start up consul template so it syncs nginx config to consul state", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/consul/nginx-alice.consul.template -O nginx-alice.consul.template", "\n",
-          "nohup ~/consul-template -consul localhost:8500 -log-level debug -syslog true -template 'nginx-alice.consul.template:nginx.conf:cp nginx.conf /etc/nginx/nginx.conf && service nginx reload' > consul-template.log &", "\n",
+          "nohup ~/consul-template -consul localhost:8500 -log-level debug -syslog -template 'nginx-alice.consul.template:nginx.conf:cp nginx.conf /etc/nginx/nginx.conf || true; service nginx reload || true' > consul-template.log &", "\n",
           "", "\n"
 
         ]]}}
