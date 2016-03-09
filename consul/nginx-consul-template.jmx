@@ -9,12 +9,12 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="elbDnsName" elementType="Argument">
             <stringProp name="Argument.name">elbDnsName</stringProp>
-            <stringProp name="Argument.value">internal-MarcoPoloAliceELB-1800785230.us-west-2.elb.amazonaws.com</stringProp>
+            <stringProp name="Argument.value">internal-MarcoPoloAliceELB-149849815.us-west-2.elb.amazonaws.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nginxIp" elementType="Argument">
             <stringProp name="Argument.name">nginxIp</stringProp>
-            <stringProp name="Argument.value">10.2.68.47</stringProp>
+            <stringProp name="Argument.value">10.2.71.78</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="numThreads" elementType="Argument">
@@ -126,15 +126,6 @@
           <boolProp name="HTTPSampler.monitor">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-          <collectionProp name="HeaderManager.headers">
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">X-Accel-Buffering</stringProp>
-              <stringProp name="Header.value">yes</stringProp>
-            </elementProp>
-          </collectionProp>
-        </HeaderManager>
         <hashTree/>
       </hashTree>
       <Summariser guiclass="SummariserGui" testclass="Summariser" testname="Generate Summary Results" enabled="true"/>

@@ -6,7 +6,7 @@ events {
 
 http {
     # General Settings
-    error_log /var/log/nginx/rob.error;
+    error_log /var/log/nginx/rob.error info;
     access_log /var/log/nginx/rob.access;   
     gzip  on;
     sendfile on;
