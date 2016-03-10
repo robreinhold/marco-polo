@@ -254,7 +254,7 @@
 
           "# Get the service and start", "\n",
           "wget https://raw.githubusercontent.com/robreinhold/marco-polo/master/rest-services/alice.js", "\n",
-          "nohup node alice.js > ~/alice.out 2>&1 &", "\n",
+          "nohup node alice.js > /dev/null 2>&1 &", "\n",
 
           "#Install consul and agent config", "\n",
           "wget https://github.com/robreinhold/marco-polo/raw/master/consul/consul -O ~/consul", "\n",

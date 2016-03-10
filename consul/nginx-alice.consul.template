@@ -8,8 +8,8 @@ events {
 
 http {
     # General Settings
-    error_log /root/log/nginx.error info;
-    access_log /root/log/nginx.access;
+    error_log /root/nginx.error info;
+    access_log /root/nginx.access;
     map_hash_bucket_size      512;
     include       mime.types;
     default_type  application/octet-stream;

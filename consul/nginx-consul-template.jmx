@@ -9,12 +9,12 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="elbDnsName" elementType="Argument">
             <stringProp name="Argument.name">elbDnsName</stringProp>
-            <stringProp name="Argument.value">internal-MarcoPoloAliceELB-149849815.us-west-2.elb.amazonaws.com</stringProp>
+            <stringProp name="Argument.value">internal-MarcoPoloAliceELB-588095554.us-west-2.elb.amazonaws.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="nginxIp" elementType="Argument">
             <stringProp name="Argument.name">nginxIp</stringProp>
-            <stringProp name="Argument.value">10.2.71.78</stringProp>
+            <stringProp name="Argument.value">10.2.68.10</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="numThreads" elementType="Argument">
