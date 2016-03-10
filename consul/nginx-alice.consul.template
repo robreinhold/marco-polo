@@ -1,22 +1,40 @@
-worker_processes 2;
+worker_processes auto;
+worker_rlimit_nofile 65535;
 
 events {
-    worker_connections 1024;
+    worker_connections 10000;
+    multi_accept on;
 }
 
 http {
     # General Settings
-    error_log /var/log/nginx/rob.error info;
-    access_log /var/log/nginx/rob.access;   
-    gzip  on;
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay off;
-    server_tokens off;
-    include mime.types;
-    keepalive_timeout 5;
+    error_log /root/log/nginx.error info;
+    access_log /root/log/nginx.access;
+    map_hash_bucket_size      512;
+    include       mime.types;
     default_type  application/octet-stream;
-    
+    server_names_hash_max_size 2048;
+    server_names_hash_bucket_size 512;
+    sendfile       on;
+    tcp_nopush     on;
+    tcp_nodelay    on;
+    keepalive_timeout  65;
+    proxy_headers_hash_bucket_size 512;
+    proxy_http_version 1.1;       # (Default=1.0) Sets the HTTP protocol version for proxying.
+    proxy_ssl_session_reuse off;  # (Default=on) Attempt to reuse ssl session when connecting to upstream via https.
+    proxy_buffering on;           # (Default=on) Enables or disables buffering of responses from the proxied server.
+    proxy_buffer_size 8k;         # (Default=4k) Sets size of the buffer used for reading the first part of a response received from the proxied server.
+    proxy_buffers 256 8k;         # (Default=8x4=32k) Sets the number and size of buffers used for reading a response from the proxied server, for a single connection.
+    proxy_busy_buffers_size 16k;  # (Default=8k) Limits the total size of buffers that can be busy sending a response to the client while the response is not yet fully read.
+
+    proxy_read_timeout         300s;
+    send_timeout            300s;
+
+    client_max_body_size          0;      
+    client_body_buffer_size       1024k;
+    large_client_header_buffers   4 16k;
+    variables_hash_bucket_size    2048;
+
 {{range services}}
     upstream {{.Name}} {
 {{range service .Name}}        server {{.Address}}:{{.Port}};
