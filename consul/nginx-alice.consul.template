@@ -56,7 +56,8 @@ http {
         }
 {{range services}}
         location /{{.Name}} {
-            rewrite .* / break;
+            rewrite /{{.Name}}/(.*) /$1 break;
+            proxy_next_upstream error;
             proxy_pass http://{{.Name}};
         } {{end}}
     }

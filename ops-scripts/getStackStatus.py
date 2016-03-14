@@ -37,8 +37,21 @@ def get_instance_ids(stack_name, group_name):
                 instance_ids.append(instance_ref.instance_id)
     return instance_ids
 
+def fetch_alice_ips_from_consul(consul_ip, node_list):
+    url = "http://{0}:{1}/{2}".format(consul_ip, 8500, "v1/health/service/alice")
+    resp = requests.get(url, timeout=2)
+    health = json.loads(resp.text)
+    for entry in health:
+        if(entry[u'Service'][u'Service'] == u'alice'):
+            node_list.append(entry[u'Node'][u'Address'])
+    return node_list
+
 def main():
     # check_consul()
+
+    # Cross-check alice group IPs with Consul node IPs
+    alice_sg_ips = []
+    alice_consul_ips = []
 
     for stack_resource in cf_conn.describe_stack_resources(stack_name_or_id=stack_name):
         if(stack_resource.resource_type == u'AWS::ElasticLoadBalancing::LoadBalancer'):
@@ -49,12 +62,15 @@ def main():
         elif(stack_resource.resource_type == u'AWS::EC2::Instance'):
             instance = ec2_conn.get_only_instances(instance_ids=stack_resource.physical_resource_id)[0]
             print "\n{}\n{}".format(stack_resource.logical_resource_id, instance.private_ip_address)
+            alice_consul_ips = fetch_alice_ips_from_consul(instance.private_ip_address,alice_consul_ips)
         elif(stack_resource.resource_type == u'AWS::AutoScaling::AutoScalingGroup'):
             instance_ids = get_instance_ids(stack_name=stack_name, group_name=stack_resource.logical_resource_id)
             if(len(instance_ids) > 0):
                 instance_count = 0
                 for instance in ec2_conn.get_only_instances(instance_ids=instance_ids):
-                    print "{}".format(instance.private_ip_address)
+                    alice_sg_ips.append(instance.private_ip_address)
+                    print instance.private_ip_address
+                    try_get(instance.private_ip_address,8080,'ping')
                     instance_count += 1
                 print "Total: {}".format(instance_count)
 

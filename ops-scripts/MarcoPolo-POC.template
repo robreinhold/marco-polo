@@ -43,7 +43,7 @@
     "AliceGroupSize" : {
       "Description" : "The # of instances to run in parallel. ",
       "Type": "Number",
-      "Default": "2"
+      "Default": "25"
     },
 
     "NginxGroupSize" : {
